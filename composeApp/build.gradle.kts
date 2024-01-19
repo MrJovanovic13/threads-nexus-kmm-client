@@ -35,6 +35,8 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.ktor.client.okhttp)
+            implementation(libs.kotlinx.coroutines.android)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -43,28 +45,18 @@ kotlin {
             implementation(compose.ui)
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
-            val voyagerVersion = "1.0.0"
-
-            // Multiplatform
-
-            // Navigator
             implementation(libs.voyager.navigator)
-
-            // Screen Model
             implementation(libs.voyager.screenmodel)
-
-            // BottomSheetNavigator
             implementation(libs.voyager.bottom.sheet.navigator)
-
-            // TabNavigator
             implementation(libs.voyager.tab.navigator)
-
-            // Transitions
             implementation(libs.voyager.transitions)
-
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.core)
+            implementation(libs.kotlinx.coroutines.core)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
+            implementation(libs.ktor.client.okhttp)
         }
     }
 }
