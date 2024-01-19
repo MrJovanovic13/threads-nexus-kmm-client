@@ -106,6 +106,7 @@ android {
 dependencies {
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.ui.text.android)
 
 }
 

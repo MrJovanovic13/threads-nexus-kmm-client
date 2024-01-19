@@ -36,7 +36,6 @@ class LandingScreen() : Screen {
     @Composable
     override fun Content() {
         MaterialTheme {
-
             TwoEditableFieldsWindow()
         }
     }
@@ -72,7 +71,7 @@ fun TwoEditableFieldsWindow() {
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        Button(onClick = { navigator?.push(DevicesScreen(groupName = "test")) }) {
+        Button(onClick = { navigator?.push(DevicesScreen(groupName = "JovanovicDevices")) }) {
             Text("Connect")
         }
     }
