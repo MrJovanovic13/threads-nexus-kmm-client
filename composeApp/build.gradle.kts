@@ -43,6 +43,25 @@ kotlin {
             implementation(compose.ui)
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
+            val voyagerVersion = "1.0.0"
+
+            // Multiplatform
+
+            // Navigator
+            implementation(libs.voyager.navigator)
+
+            // Screen Model
+            implementation(libs.voyager.screenmodel)
+
+            // BottomSheetNavigator
+            implementation(libs.voyager.bottom.sheet.navigator)
+
+            // TabNavigator
+            implementation(libs.voyager.tab.navigator)
+
+            // Transitions
+            implementation(libs.voyager.transitions)
+
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -79,9 +98,15 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+    buildToolsVersion = "34.0.0"
     dependencies {
         debugImplementation(libs.compose.ui.tooling)
     }
+}
+dependencies {
+    implementation(libs.androidx.navigation.runtime.ktx)
+    implementation(libs.androidx.activity.ktx)
+
 }
 
 compose.desktop {
