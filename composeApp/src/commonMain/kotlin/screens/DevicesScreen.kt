@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -21,6 +22,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Settings
@@ -57,6 +59,8 @@ data class DevicesScreen( var groupName: String): Screen {
                     .padding(16.dp)
             ) {
                 var textFieldText by remember { mutableStateOf("") }
+                var searchResults by remember { mutableStateOf(generateDummyData()) }
+
                 TopAppBar(
                     title = { Text(groupName) },
                     actions = {
@@ -68,10 +72,10 @@ data class DevicesScreen( var groupName: String): Screen {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Search Bar
                 BasicTextField(
                     value = textFieldText,
-                    onValueChange = { textFieldText = it },
+                    onValueChange = { textFieldText = it
+                        searchResults = performSearch(textFieldText)},
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(
                         onDone = {
@@ -88,8 +92,8 @@ data class DevicesScreen( var groupName: String): Screen {
 
                 // Dashboard Content
                 LazyColumn {
-                    items(10) { index ->
-                        DashboardItem(index = index)
+                    items(searchResults) { result ->
+                    DashboardItem(item = result)
                     }
                 }
             }
@@ -97,7 +101,7 @@ data class DevicesScreen( var groupName: String): Screen {
     }
 
     @Composable
-    fun DashboardItem(index: Int) {
+    fun DashboardItem(item: String) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -110,9 +114,10 @@ data class DevicesScreen( var groupName: String): Screen {
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+
                 Text(
-                    "Device $index",
-                    style = MaterialTheme.typography.h6,
+                    item,
+                    style = MaterialTheme.typography.h5,
                     modifier = Modifier.weight(1f)
                 )
 
@@ -130,10 +135,23 @@ data class DevicesScreen( var groupName: String): Screen {
                             contentDescription = "DeleteDevice"
                         )
                     }
+                    Icon(imageVector = Icons.Default.CheckCircle,
+                        contentDescription = "Status",
+                        tint = Color.Green
+                    )
                 }
 
             }
         }
+    }
+
+    fun generateDummyData(): List<String> {
+        return List(10) { "Device $it" }
+    }
+
+    // Function to perform search (replace with your actual search logic)
+    fun performSearch(query: String): List<String> {
+        return generateDummyData().filter { it.contains(query, ignoreCase = true) }
     }
 
 }
