@@ -2,9 +2,12 @@ import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
+    val kotlinVersion = "1.9.21"
+
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
+    kotlin("plugin.serialization") version kotlinVersion
 }
 
 kotlin {
@@ -17,7 +20,7 @@ kotlin {
     }
     
     jvm("desktop")
-    
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -53,6 +56,8 @@ kotlin {
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.core)
             implementation(libs.kotlinx.coroutines.core)
+            implementation("io.ktor:ktor-client-content-negotiation:3.0.0-beta-1")
+            implementation("io.ktor:ktor-serialization-kotlinx-json:3.0.0-beta-1")
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
