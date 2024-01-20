@@ -36,10 +36,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.launch
+import model.Device
+import service.DeviceService
 
 data class DevicesScreen( var groupName: String): Screen {
     @Composable
     override fun Content() {
+        val deviceService = DeviceService()
+        var devices: List<Device>
+
+        CoroutineScope(Dispatchers.IO).launch {
+            devices = deviceService.getAllDevices()
+        }
+
         MaterialTheme {
             Dashboard()
         }
