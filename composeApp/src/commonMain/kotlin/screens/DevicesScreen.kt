@@ -163,7 +163,7 @@ data class DevicesScreen( var groupName: String): Screen {
         var devices: List<Device>
 
         CoroutineScope(Dispatchers.IO).launch {
-            devices = deviceService.getAllDevices()
+            devices = deviceService.getAllDevicesByGroupId("TEST")
             availableDevices.value = devices
             isLoading  = false
         }
