@@ -70,7 +70,7 @@ data class DevicesScreen( var groupName: String): Screen {
                     .padding(16.dp)
             ) {
                 var textFieldText by remember { mutableStateOf("") }
-                var searchResults by remember { availableDevices }
+                var searchResults by remember { mutableStateOf(availableDevices.value) }
 
                 TopAppBar(
                     title = { Text(groupName) },
@@ -90,7 +90,6 @@ data class DevicesScreen( var groupName: String): Screen {
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(
                         onDone = {
-                           // LocalSoftwareKeyboardController.current.hide()
                         }
                     ),
                     modifier = Modifier
@@ -162,7 +161,6 @@ data class DevicesScreen( var groupName: String): Screen {
 
         val deviceService = DeviceService()
         var devices: List<Device>
-        var isLoadingAvailableDevices = mutableStateOf(false)
 
         CoroutineScope(Dispatchers.IO).launch {
             devices = deviceService.getAllDevices()
@@ -188,8 +186,6 @@ data class DevicesScreen( var groupName: String): Screen {
             }
         }
     }
-
-    // Function to perform search (replace with your actual search logic)
     fun performSearch(query: String): List<Device> {
         return availableDevices.value.filter { it.name.contains(query, ignoreCase = true)}
 
