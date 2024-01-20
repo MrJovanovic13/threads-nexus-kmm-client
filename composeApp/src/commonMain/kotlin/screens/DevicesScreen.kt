@@ -2,6 +2,7 @@ package screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,12 +10,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -46,17 +49,12 @@ import model.Device
 import service.DeviceService
 
 data class DevicesScreen( var groupName: String): Screen {
+    var availableDevices = mutableStateOf<List<Device>>(emptyList())
     @Composable
     override fun Content() {
-        val deviceService = DeviceService()
-        var devices: List<Device>
-
-        CoroutineScope(Dispatchers.IO).launch {
-            devices = deviceService.getAllDevices()
-        }
-
         MaterialTheme {
-            Dashboard()
+            LoadingScreen()
+
         }
     }
 
@@ -72,7 +70,7 @@ data class DevicesScreen( var groupName: String): Screen {
                     .padding(16.dp)
             ) {
                 var textFieldText by remember { mutableStateOf("") }
-                var searchResults by remember { mutableStateOf(generateDummyData()) }
+                var searchResults by remember { availableDevices }
 
                 TopAppBar(
                     title = { Text(groupName) },
@@ -114,7 +112,7 @@ data class DevicesScreen( var groupName: String): Screen {
     }
 
     @Composable
-    fun DashboardItem(item: String) {
+    fun DashboardItem(item: Device) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -129,7 +127,7 @@ data class DevicesScreen( var groupName: String): Screen {
             ) {
 
                 Text(
-                    item,
+                    item.name,
                     style = MaterialTheme.typography.h5,
                     modifier = Modifier.weight(1f)
                 )
@@ -158,13 +156,43 @@ data class DevicesScreen( var groupName: String): Screen {
         }
     }
 
-    fun generateDummyData(): List<String> {
-        return List(10) { "Device $it" }
+    @Composable
+    fun LoadingScreen() {
+        var isLoading by remember { mutableStateOf(true) }
+
+        val deviceService = DeviceService()
+        var devices: List<Device>
+        var isLoadingAvailableDevices = mutableStateOf(false)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            devices = deviceService.getAllDevices()
+            availableDevices.value = devices
+            isLoading  = false
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            if (isLoading) {
+                // Loading Indicator
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .size(50.dp)
+                        .align(Alignment.Center),
+                    color = Color.Black
+                )
+            } else {
+                Dashboard()
+            }
+        }
     }
 
     // Function to perform search (replace with your actual search logic)
-    fun performSearch(query: String): List<String> {
-        return generateDummyData().filter { it.contains(query, ignoreCase = true) }
+    fun performSearch(query: String): List<Device> {
+        return availableDevices.value.filter { it.name.contains(query, ignoreCase = true)}
+
     }
 
 }
