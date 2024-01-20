@@ -18,9 +18,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
+import model.enumeration.DeviceType
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import screens.composables.EditableFieldWithLabel
+import service.lockThisDevice
 
 class LandingScreen() : Screen {
 
@@ -28,6 +30,8 @@ class LandingScreen() : Screen {
     override fun Content() {
         MaterialTheme {}
         TwoEditableFieldsWindow()
+
+        lockThisDevice(DeviceType.MAC)
     }
 }
 
