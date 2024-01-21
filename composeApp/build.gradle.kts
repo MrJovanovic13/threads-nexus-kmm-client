@@ -45,8 +45,8 @@ kotlin {
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.core)
             implementation(libs.kotlinx.coroutines.core)
-            implementation("io.ktor:ktor-client-content-negotiation:3.0.0-beta-1")
-            implementation("io.ktor:ktor-serialization-kotlinx-json:3.0.0-beta-1")
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
