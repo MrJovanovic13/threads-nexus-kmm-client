@@ -1,5 +1,6 @@
 package service
 
+import Constants
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -13,8 +14,7 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation as ClientCon
 class DeviceService {
 
     companion object {
-        const val baseUrl =
-            "https://7722-2a06-5b05-8c04-2f00-f997-a316-de91-6a44.ngrok-free.app/api/devices"
+        const val baseUrl = Constants.BACKEND_URL.plus("/devices")
     }
 
     private val client = HttpClient() {
