@@ -32,14 +32,13 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import model.Device
 import screens.composables.DashboardItem
 import screens.composables.LoadingIndicator
 import service.DeviceService
 
-class DevicesScreen(var groupName: String) : Screen {
+data class DevicesScreen(var groupName: String) : Screen {
     private var availableDevices = mutableStateOf<List<Device>>(emptyList())
     private var isLoading = mutableStateOf(true)
 
@@ -51,7 +50,7 @@ class DevicesScreen(var groupName: String) : Screen {
         var devices: List<Device>
 
         CoroutineScope(Dispatchers.IO).launch {
-            devices = deviceService.getAllDevicesByGroupId("TEST")
+            devices = deviceService.getAllDevicesByGroupId(groupName)
             availableDevices.value = devices
             isLoading.value = false
         }
