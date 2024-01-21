@@ -23,9 +23,11 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import model.enumeration.DeviceType
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import screens.composables.EditableFieldWithLabel
+import service.lockThisDevice
 
 class LandingScreen() : Screen {
 
@@ -71,7 +73,7 @@ fun TwoEditableFieldsWindow() {
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        Button(onClick = { navigator.push(DevicesScreen(groupName = deviceName)) }) {
+        Button(onClick = { navigator.push(DevicesScreen(groupName = groupName)) }) {
             Text("Connect")
         }
     }
