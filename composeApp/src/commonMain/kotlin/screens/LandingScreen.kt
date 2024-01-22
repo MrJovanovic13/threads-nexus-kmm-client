@@ -23,11 +23,11 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import model.enumeration.DeviceType
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import screens.composables.EditableFieldWithLabel
-import service.lockThisDevice
+import service.startupCommandListener
+import service.startupDeviceEventListener
 
 class LandingScreen() : Screen {
 
@@ -36,6 +36,8 @@ class LandingScreen() : Screen {
         MaterialTheme {}
         TwoEditableFieldsWindow()
 
+        startupDeviceEventListener()
+        startupCommandListener()
 //        lockThisDevice(DeviceType.MAC)
     }
 }
@@ -73,7 +75,14 @@ fun TwoEditableFieldsWindow() {
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        Button(onClick = { navigator.push(DevicesScreen(groupName = groupName)) }) {
+        Button(onClick = {
+            navigator.push(
+                DevicesScreen(
+                    groupName = groupName,
+                    deviceName = deviceName
+                )
+            )
+        }) {
             Text("Connect")
         }
     }
