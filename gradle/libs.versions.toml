@@ -13,6 +13,7 @@ androidx-material = "1.10.0"
 androidx-navigationCompose = "2.5.3"
 androidx-test-junit = "1.1.5"
 animation = "1.5.4"
+commonsLang3 = "3.14.0"
 compose = "1.5.4"
 compose-compiler = "1.5.6"
 compose-plugin = "1.5.11"
@@ -29,6 +30,7 @@ androidx-activity-compose-1_3_0 = { module = "androidx.activity:activity-compose
 androidx-animation = { module = "androidx.compose.animation:animation", version.ref = "animation" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-navigation-compose-2_5_3 = { module = "androidx.navigation:navigation-compose", version.ref = "androidx-navigationCompose" }
+commons-lang3 = { module = "org.apache.commons:commons-lang3", version.ref = "commonsLang3" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

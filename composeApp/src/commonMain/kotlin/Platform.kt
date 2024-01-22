@@ -1,5 +1,3 @@
-interface Platform {
-    val name: String
-}
+import model.enumeration.DeviceType
 
-expect fun getPlatform(): Platform
+expect fun getDeviceType(): DeviceType
