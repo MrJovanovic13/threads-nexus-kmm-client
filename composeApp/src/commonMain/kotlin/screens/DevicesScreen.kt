@@ -34,11 +34,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import model.Device
-import model.enumeration.Severity
 import screens.composables.DashboardItem
 import screens.composables.LoadingIndicator
 import service.DeviceService
-import service.EventsService
 
 data class DevicesScreen(var groupName: String, var deviceName: String) : Screen {
     private var availableDevices = mutableStateOf<List<Device>>(emptyList())
@@ -47,13 +45,6 @@ data class DevicesScreen(var groupName: String, var deviceName: String) : Screen
     @Composable
     override fun Content() {
         MaterialTheme {}
-
-        val eventsService = EventsService()
-        // This is sending the event on every recomposition, not good but fine for now while we test
-        // Probably move it to LandingScreen connect button onClick event
-        CoroutineScope(Dispatchers.IO).launch {
-            eventsService.postEvent("DEVICE ONLINE", null, Severity.LOW, groupName, deviceName)
-        }
 
         val deviceService = DeviceService()
         var devices: List<Device>

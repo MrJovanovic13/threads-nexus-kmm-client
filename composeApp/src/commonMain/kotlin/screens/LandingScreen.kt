@@ -23,9 +23,15 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import model.enumeration.DeviceEventName
+import model.enumeration.Severity
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import screens.composables.EditableFieldWithLabel
+import service.EventsService
 import service.startupCommandListener
 import service.startupDeviceEventListener
 
@@ -75,7 +81,18 @@ fun TwoEditableFieldsWindow() {
 
         Spacer(modifier = Modifier.height(32.dp))
 
+        val eventsService = EventsService()
+
         Button(onClick = {
+            CoroutineScope(Dispatchers.IO).launch {
+                eventsService.postEvent(
+                    DeviceEventName.DEVICE_ONLINE.name,
+                    null,
+                    Severity.LOW,
+                    groupName,
+                    deviceName
+                )
+            }
             navigator.push(
                 DevicesScreen(
                     groupName = groupName,
