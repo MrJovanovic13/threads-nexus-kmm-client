@@ -89,9 +89,7 @@ fun TwoEditableFieldsWindow(eventsService: EventsService) {
                 eventsService.postEvent(
                     DeviceEventName.DEVICE_ONLINE.name,
                     null,
-                    Severity.LOW,
-                    groupName,
-                    deviceName
+                    Severity.LOW
                 )
             }
             settings.putString("groupName", groupName)
