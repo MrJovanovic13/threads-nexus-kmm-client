@@ -30,28 +30,29 @@ import model.enumeration.DeviceEventName
 import model.enumeration.Severity
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import screens.composables.EditableFieldWithLabel
 import service.EventsService
 import service.startupCommandListener
 import service.startupDeviceEventListener
 
-class LandingScreen() : Screen {
+class LandingScreen : Screen, KoinComponent {
 
     @Composable
     override fun Content() {
         MaterialTheme {}
-        TwoEditableFieldsWindow()
+        val eventsService: EventsService by inject()
+        TwoEditableFieldsWindow(eventsService)
 
         startupDeviceEventListener()
         startupCommandListener()
-//        lockThisDevice(DeviceType.MAC)
     }
 }
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun TwoEditableFieldsWindow() {
-
+fun TwoEditableFieldsWindow(eventsService: EventsService) {
     val navigator = LocalNavigator.currentOrThrow
 
     Column(
@@ -80,8 +81,6 @@ fun TwoEditableFieldsWindow() {
         EditableFieldWithLabel("Group name", groupName, onTextChange = { groupName = it })
 
         Spacer(modifier = Modifier.height(32.dp))
-
-        val eventsService = EventsService()
 
         Button(onClick = {
             CoroutineScope(Dispatchers.IO).launch {

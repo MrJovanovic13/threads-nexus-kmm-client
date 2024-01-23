@@ -18,6 +18,7 @@ compose = "1.5.4"
 compose-compiler = "1.5.6"
 compose-plugin = "1.5.11"
 junit = "4.13.2"
+koinCore = "3.5.3"
 kotlin = "1.9.21"
 ktor = "3.0.0-beta-1"
 ktor-eap = "3.0.0-beta-1-eap-872"
@@ -31,6 +32,10 @@ androidx-animation = { module = "androidx.compose.animation:animation", version.
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-navigation-compose-2_5_3 = { module = "androidx.navigation:navigation-compose", version.ref = "androidx-navigationCompose" }
 commons-lang3 = { module = "org.apache.commons:commons-lang3", version.ref = "commonsLang3" }
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinCore" }
+koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinCore" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinCore" }
+koin-test = { module = "io.insert-koin:koin-test", version.ref = "koinCore" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

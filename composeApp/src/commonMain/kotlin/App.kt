@@ -6,6 +6,8 @@ import screens.LandingScreen
 
 @Composable
 fun App() {
+    initKoin()
+
     MaterialTheme {
         Navigator(LandingScreen())
     }

@@ -1,6 +1,6 @@
 package service
 
-import model.enumeration.Severity
+import Constants
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.post
@@ -10,9 +10,12 @@ import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import model.dto.DeviceEventCreate
+import model.enumeration.Severity
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.time.Instant
 
-class EventsService {
+class EventsService : KoinComponent {
 
     private val client = HttpClient() {
         install(ContentNegotiation) {
@@ -23,14 +26,14 @@ class EventsService {
         }
     }
 
-    suspend fun  postEvent(
+    suspend fun postEvent(
         title: String,
         info: String?,
         severity: Severity,
         groupName: String,
         deviceName: String
     ) {
-        val deviceService = DeviceService()
+        val deviceService: DeviceService by inject()
 
         client.post(Constants.BACKEND_URL.plus("/events")) {
             contentType(ContentType.Application.Json)

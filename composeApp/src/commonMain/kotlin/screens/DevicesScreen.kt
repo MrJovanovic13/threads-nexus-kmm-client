@@ -34,19 +34,24 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import model.Device
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import screens.composables.DashboardItem
 import screens.composables.LoadingIndicator
 import service.DeviceService
 
-data class DevicesScreen(var groupName: String, var deviceName: String) : Screen {
+data class DevicesScreen(
+    var groupName: String,
+    var deviceName: String,
+) : Screen, KoinComponent {
     private var availableDevices = mutableStateOf<List<Device>>(emptyList())
     private var isLoading = mutableStateOf(true)
+    private val deviceService: DeviceService by inject()
 
     @Composable
     override fun Content() {
         MaterialTheme {}
 
-        val deviceService = DeviceService()
         var devices: List<Device>
 
         CoroutineScope(Dispatchers.IO).launch {
