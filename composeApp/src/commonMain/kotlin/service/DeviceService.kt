@@ -7,8 +7,12 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
 import io.ktor.client.request.url
 import io.ktor.client.statement.bodyAsText
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import model.Device
@@ -36,6 +40,22 @@ class DeviceService {
 
     suspend fun getAllDevices(): List<Device> {
         return client.get(baseUrl).body()
+    }
+
+    suspend fun postCurrentDevice() {
+        client.post(Constants.BACKEND_URL.plus("/devices")) {
+            contentType(ContentType.Application.Json)
+            setBody(
+                Device(
+                    deviceId,
+                    deviceName,
+                    getDeviceType(),
+                    DeviceStatus.ONLINE,
+                    null,
+                    groupName
+                )
+            )
+        }
     }
 
     private suspend fun getCurrentIp(): String {

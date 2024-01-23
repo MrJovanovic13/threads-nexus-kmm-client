@@ -31,7 +31,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import com.russhwolf.settings.Settings
-import com.russhwolf.settings.get
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -56,6 +55,8 @@ class DevicesScreen : Screen, KoinComponent {
         var devices: List<Device>
 
         CoroutineScope(Dispatchers.IO).launch {
+            deviceService.postCurrentDevice()
+            // TODO Implement indicator showing current device among the list
             devices = deviceService.getAllDevicesByGroupId()
             availableDevices.value = devices
             isLoading.value = false
