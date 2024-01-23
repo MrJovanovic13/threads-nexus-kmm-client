@@ -30,6 +30,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import com.russhwolf.settings.Settings
+import com.russhwolf.settings.get
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -40,13 +42,12 @@ import screens.composables.DashboardItem
 import screens.composables.LoadingIndicator
 import service.DeviceService
 
-data class DevicesScreen(
-    var groupName: String,
-    var deviceName: String,
-) : Screen, KoinComponent {
+class DevicesScreen : Screen, KoinComponent {
     private var availableDevices = mutableStateOf<List<Device>>(emptyList())
     private var isLoading = mutableStateOf(true)
     private val deviceService: DeviceService by inject()
+    private val settings = Settings()
+    private val groupName = settings.getString("groupName", "UNKNOWN")
 
     @Composable
     override fun Content() {
@@ -55,7 +56,7 @@ data class DevicesScreen(
         var devices: List<Device>
 
         CoroutineScope(Dispatchers.IO).launch {
-            devices = deviceService.getAllDevicesByGroupId(groupName)
+            devices = deviceService.getAllDevicesByGroupId()
             availableDevices.value = devices
             isLoading.value = false
         }

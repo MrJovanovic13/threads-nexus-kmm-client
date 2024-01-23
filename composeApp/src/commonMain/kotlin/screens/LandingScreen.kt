@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.russhwolf.settings.Settings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -54,6 +55,7 @@ class LandingScreen : Screen, KoinComponent {
 @Composable
 fun TwoEditableFieldsWindow(eventsService: EventsService) {
     val navigator = LocalNavigator.currentOrThrow
+    val settings = Settings()
 
     Column(
         modifier = Modifier
@@ -92,12 +94,9 @@ fun TwoEditableFieldsWindow(eventsService: EventsService) {
                     deviceName
                 )
             }
-            navigator.push(
-                DevicesScreen(
-                    groupName = groupName,
-                    deviceName = deviceName
-                )
-            )
+            settings.putString("groupName", groupName)
+            settings.putString("deviceName", deviceName)
+            navigator.push(DevicesScreen())
         }) {
             Text("Connect")
         }

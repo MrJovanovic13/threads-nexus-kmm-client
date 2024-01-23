@@ -1,6 +1,7 @@
 package service
 
 import Constants
+import com.russhwolf.settings.Settings
 import getDeviceType
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -8,13 +9,16 @@ import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.url
 import io.ktor.client.statement.bodyAsText
-import model.Device
-import io.ktor.serialization.kotlinx.json.*
+import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import model.Device
 import model.enumeration.DeviceStatus
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation as ClientContentNegotiation
 
 class DeviceService {
+    private val settings = Settings()
+    private val groupName = settings.getString("groupName", "UNKNOWN")
+    private val deviceName = settings.getString("deviceName", "UNKNOWN")
 
     companion object {
         const val baseUrl = Constants.BACKEND_URL.plus("/devices")
@@ -38,9 +42,7 @@ class DeviceService {
         return response.bodyAsText()
     }
 
-    // TODO Consider saving deviceName and groupName in some kind of shared data so it's not
-    // passed around this function chain
-    suspend fun getCurrentDevice(deviceName: String, groupName: String): Device {
+    suspend fun getCurrentDevice(): Device {
         return Device(
             Constants.CURRENT_DEVICE_ID,
             deviceName,
@@ -51,10 +53,10 @@ class DeviceService {
         )
     }
 
-    suspend fun getAllDevicesByGroupId(groupId: String): List<Device> {
+    suspend fun getAllDevicesByGroupId(): List<Device> {
         return client.get {
             url(baseUrl)
-            parameter("groupId", groupId)
+            parameter("groupId", groupName)
         }.body()
     }
 }

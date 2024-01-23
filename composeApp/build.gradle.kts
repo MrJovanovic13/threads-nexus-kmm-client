@@ -51,6 +51,8 @@ kotlin {
             implementation(libs.ktor.serialization.kotlinx.json)
             runtimeOnly(libs.koin.core)
             implementation(libs.koin.test)
+            implementation(libs.multiplatform.settings.no.arg)
+
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

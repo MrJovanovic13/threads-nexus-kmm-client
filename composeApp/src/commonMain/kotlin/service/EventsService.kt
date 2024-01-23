@@ -29,9 +29,7 @@ class EventsService : KoinComponent {
     suspend fun postEvent(
         title: String,
         info: String?,
-        severity: Severity,
-        groupName: String,
-        deviceName: String
+        severity: Severity
     ) {
         val deviceService: DeviceService by inject()
 
@@ -43,7 +41,7 @@ class EventsService : KoinComponent {
                     info,
                     Instant.now(),
                     severity,
-                    deviceService.getCurrentDevice(deviceName, groupName)
+                    deviceService.getCurrentDevice()
                 )
             )
         }

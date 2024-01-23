@@ -1,6 +1,5 @@
 package service
 
-import Constants
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,9 +18,7 @@ fun executeCommand(command: Command) {
                 eventsService.postEvent(
                     DeviceEventName.DEVICE_LOCKED.name,
                     null,
-                    Severity.MEDIUM,
-                    "TEST",
-                    Constants.CURRENT_DEVICE_ID
+                    Severity.MEDIUM
                 )
             }
         }
