@@ -46,14 +46,7 @@ class DeviceService {
         client.post(Constants.BACKEND_URL.plus("/devices")) {
             contentType(ContentType.Application.Json)
             setBody(
-                Device(
-                    deviceId,
-                    deviceName,
-                    getDeviceType(),
-                    DeviceStatus.ONLINE,
-                    null,
-                    groupName
-                )
+                Device(deviceId, deviceName, getDeviceType(), DeviceStatus.ONLINE, null, groupName)
             )
         }
     }
