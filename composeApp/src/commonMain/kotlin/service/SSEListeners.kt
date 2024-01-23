@@ -1,6 +1,7 @@
 package service
 
 import Constants
+import com.russhwolf.settings.Settings
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.sse.SSE
 import io.ktor.client.plugins.sse.serverSentEventsSession
@@ -30,11 +31,14 @@ fun startupDeviceEventListener() {
 
 // TODO Implement robust reconnect mechanism
 fun startupCommandListener() {
+    val settings = Settings()
+    val deviceId = settings.getString("deviceId", "UNKNOWN")
+
     CoroutineScope(Dispatchers.IO).launch {
         client.serverSentEventsSession(
             Constants.BACKEND_URL
                 .plus("/devices/")
-                .plus(Constants.CURRENT_DEVICE_ID)
+                .plus(deviceId)
                 .plus("/commands")
         )
             .incoming

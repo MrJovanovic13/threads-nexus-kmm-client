@@ -58,6 +58,7 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.ktor.client.okhttp)
             implementation(libs.commons.lang3)
+            implementation(libs.oshi.core)
         }
     }
 }

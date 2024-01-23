@@ -19,6 +19,7 @@ class DeviceService {
     private val settings = Settings()
     private val groupName = settings.getString("groupName", "UNKNOWN")
     private val deviceName = settings.getString("deviceName", "UNKNOWN")
+    private val deviceId = settings.getString("deviceId", "UNKNOWN");
 
     companion object {
         const val baseUrl = Constants.BACKEND_URL.plus("/devices")
@@ -44,7 +45,7 @@ class DeviceService {
 
     suspend fun getCurrentDevice(): Device {
         return Device(
-            Constants.CURRENT_DEVICE_ID,
+            deviceId,
             deviceName,
             getDeviceType(),
             DeviceStatus.ONLINE,

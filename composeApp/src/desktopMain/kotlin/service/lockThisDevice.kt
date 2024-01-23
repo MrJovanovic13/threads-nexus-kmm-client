@@ -1,7 +1,7 @@
 package service
 
-import model.Device
 import model.enumeration.DeviceType
+import oshi.SystemInfo
 
 actual fun lockThisDevice(deviceType: DeviceType) {
     when (deviceType) {
@@ -21,4 +21,13 @@ private fun lockMacDevice() {
         "osascript -e 'tell application \"Finder\" to sleep'"
     )
     pb.start()
+}
+
+actual fun generateDeviceId(): String {
+    return SystemInfo().run {
+        val vendor = operatingSystem.manufacturer
+        val processorSerialNumber = hardware.computerSystem.serialNumber
+
+        "$vendor\$$processorSerialNumber"
+    }
 }
