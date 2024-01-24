@@ -3,15 +3,20 @@ package service
 import model.enumeration.DeviceType
 import oshi.SystemInfo
 
+
 actual fun lockThisDevice(deviceType: DeviceType) {
     when (deviceType) {
-        DeviceType.WINDOWS -> TODO()
+        DeviceType.WINDOWS -> lockWindowsDevice()
         DeviceType.MAC -> lockMacDevice()
         DeviceType.LINUX -> TODO()
         DeviceType.MOBILE_ANDROID -> TODO()
         DeviceType.MOBILE_IOS -> TODO()
         DeviceType.UNKNOWN -> TODO()
     }
+}
+
+private fun lockWindowsDevice() {
+    Runtime.getRuntime().exec("C:/WINDOWS/System32/rundll32.exe user32.dll,LockWorkStation")
 }
 
 private fun lockMacDevice() {
