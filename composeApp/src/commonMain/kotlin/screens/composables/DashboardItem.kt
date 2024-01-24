@@ -18,10 +18,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import model.Device
+import model.enumeration.CommandType
+import service.CommandsService
 
 @Composable
 fun DashboardItem(item: Device) {
+    // TODO Troubleshoot and use KOIN here
+    val commandsService = CommandsService()
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -45,7 +53,11 @@ fun DashboardItem(item: Device) {
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = { /* Handle settings click */ }) {
+                IconButton(onClick = {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        commandsService.postEvent(CommandType.LOCK_DEVICE, item)
+                    }
+                }) {
                     Icon(imageVector = Icons.Default.Lock, contentDescription = "LockDevice")
                 }
 
