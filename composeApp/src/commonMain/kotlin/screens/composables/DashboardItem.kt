@@ -14,7 +14,7 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,7 +28,7 @@ import service.CommandsService
 import service.DeviceService
 
 @Composable
-fun DashboardItem(item: Device, devices: SnapshotStateList<Device>) {
+fun DashboardItem(item: Device, isLoading: MutableState<Boolean>) {
     // TODO Troubleshoot and use KOIN here
     val commandsService = CommandsService()
     val deviceService = DeviceService()
@@ -67,7 +67,7 @@ fun DashboardItem(item: Device, devices: SnapshotStateList<Device>) {
                 IconButton(onClick = {
                     CoroutineScope(Dispatchers.IO).launch {
                         deviceService.detachDeviceFromGroup(item)
-                        devices.remove(item)
+                        isLoading.value = true
                     }
                 }) {
                     Icon(

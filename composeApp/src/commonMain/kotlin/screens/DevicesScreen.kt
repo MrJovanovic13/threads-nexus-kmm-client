@@ -19,6 +19,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,6 +27,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
@@ -56,8 +58,8 @@ class DevicesScreen : Screen, KoinComponent {
         if (isLoading.value) {
             CoroutineScope(Dispatchers.IO).launch {
                 deviceService.postCurrentDevice()
-                // TODO Implement indicator showing current device among the list
                 val devices = deviceService.getAllDevicesByGroupId()
+                availableDevices.clear()
                 availableDevices.addAll(devices)
                 isLoading.value = false
             }
@@ -78,11 +80,17 @@ class DevicesScreen : Screen, KoinComponent {
                     .padding(16.dp)
             ) {
                 var textFieldText by remember { mutableStateOf("") }
-                val searchResults by remember { mutableStateOf(availableDevices) }
+                var searchResults by remember { mutableStateOf(availableDevices) }
 
                 TopAppBar(
                     title = { Text(groupName) },
                     actions = {
+                        IconButton(onClick = { isLoading.value = true }) {
+                            Icon(
+                                imageVector = Icons.Default.Refresh,
+                                contentDescription = "Refresh"
+                            )
+                        }
                         IconButton(onClick = { /* Handle settings click */ }) {
                             Icon(
                                 imageVector = Icons.Default.Settings,
@@ -98,10 +106,8 @@ class DevicesScreen : Screen, KoinComponent {
                     value = textFieldText,
                     onValueChange = {
                         textFieldText = it
-                        with(searchResults) {
-                            clear()
-                            addAll(filterListByNamesAndReturn(textFieldText))
-                        }
+                        val filteredItems = filterListByNamesAndReturn(textFieldText)
+                        searchResults = filteredItems.toMutableStateList()
                     },
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(
@@ -118,7 +124,7 @@ class DevicesScreen : Screen, KoinComponent {
 
                 LazyColumn {
                     items(searchResults) { result ->
-                        DashboardItem(item = result, devices = availableDevices)
+                        DashboardItem(item = result, isLoading = isLoading)
                     }
                 }
             }
