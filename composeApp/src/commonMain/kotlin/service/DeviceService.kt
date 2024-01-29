@@ -23,7 +23,7 @@ class DeviceService {
     private val settings = Settings()
     private val groupName = settings.getString("groupName", "UNKNOWN")
     private val deviceName = settings.getString("deviceName", "UNKNOWN")
-    private val deviceId = settings.getString("deviceId", "UNKNOWN");
+    private val deviceId = settings.getString("deviceId", "UNKNOWN")
 
     companion object {
         const val baseUrl = Constants.BACKEND_URL.plus("/devices")
@@ -40,6 +40,15 @@ class DeviceService {
 
     suspend fun getAllDevices(): List<Device> {
         return client.get(baseUrl).body()
+    }
+
+    suspend fun detachDeviceFromGroup(device: Device) {
+        client.post(Constants.BACKEND_URL.plus("/devices")) {
+            contentType(ContentType.Application.Json)
+            setBody(
+                Device(device.id, device.name, device.type, device.status, device.ip, null)
+            )
+        }
     }
 
     suspend fun postCurrentDevice() {

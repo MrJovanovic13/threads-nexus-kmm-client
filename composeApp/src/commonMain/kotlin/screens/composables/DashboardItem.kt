@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,11 +25,13 @@ import kotlinx.coroutines.launch
 import model.Device
 import model.enumeration.CommandType
 import service.CommandsService
+import service.DeviceService
 
 @Composable
-fun DashboardItem(item: Device) {
+fun DashboardItem(item: Device, devices: SnapshotStateList<Device>) {
     // TODO Troubleshoot and use KOIN here
     val commandsService = CommandsService()
+    val deviceService = DeviceService()
 
     Card(
         modifier = Modifier
@@ -61,7 +64,12 @@ fun DashboardItem(item: Device) {
                     Icon(imageVector = Icons.Default.Lock, contentDescription = "LockDevice")
                 }
 
-                IconButton(onClick = { /* Handle settings click */ }) {
+                IconButton(onClick = {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        deviceService.detachDeviceFromGroup(item)
+                        devices.remove(item)
+                    }
+                }) {
                     Icon(
                         imageVector = Icons.Default.Delete,
                         contentDescription = "DeleteDevice"

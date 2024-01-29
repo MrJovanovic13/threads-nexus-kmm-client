@@ -22,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -42,7 +43,7 @@ import screens.composables.LoadingIndicator
 import service.DeviceService
 
 class DevicesScreen : Screen, KoinComponent {
-    private var availableDevices = mutableStateOf<List<Device>>(emptyList())
+    private var availableDevices = mutableStateListOf<Device>()
     private var isLoading = mutableStateOf(true)
     private val deviceService: DeviceService by inject()
     private val settings = Settings()
@@ -52,17 +53,14 @@ class DevicesScreen : Screen, KoinComponent {
     override fun Content() {
         MaterialTheme {}
 
-        var devices: List<Device>
-
-        CoroutineScope(Dispatchers.IO).launch {
-            deviceService.postCurrentDevice()
-            // TODO Implement indicator showing current device among the list
-            devices = deviceService.getAllDevicesByGroupId()
-            availableDevices.value = devices
-            isLoading.value = false
-        }
-
         if (isLoading.value) {
+            CoroutineScope(Dispatchers.IO).launch {
+                deviceService.postCurrentDevice()
+                // TODO Implement indicator showing current device among the list
+                val devices = deviceService.getAllDevicesByGroupId()
+                availableDevices.addAll(devices)
+                isLoading.value = false
+            }
             LoadingIndicator()
         } else {
             Dashboard()
@@ -80,7 +78,7 @@ class DevicesScreen : Screen, KoinComponent {
                     .padding(16.dp)
             ) {
                 var textFieldText by remember { mutableStateOf("") }
-                var searchResults by remember { mutableStateOf(availableDevices.value) }
+                val searchResults by remember { mutableStateOf(availableDevices) }
 
                 TopAppBar(
                     title = { Text(groupName) },
@@ -100,7 +98,10 @@ class DevicesScreen : Screen, KoinComponent {
                     value = textFieldText,
                     onValueChange = {
                         textFieldText = it
-                        searchResults = filterListByNamesAndReturn(textFieldText)
+                        with(searchResults) {
+                            clear()
+                            addAll(filterListByNamesAndReturn(textFieldText))
+                        }
                     },
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(
@@ -117,7 +118,7 @@ class DevicesScreen : Screen, KoinComponent {
 
                 LazyColumn {
                     items(searchResults) { result ->
-                        DashboardItem(item = result)
+                        DashboardItem(item = result, devices = availableDevices)
                     }
                 }
             }
@@ -125,6 +126,6 @@ class DevicesScreen : Screen, KoinComponent {
     }
 
     private fun filterListByNamesAndReturn(query: String): List<Device> {
-        return availableDevices.value.filter { it.name.contains(query, ignoreCase = true) }
+        return availableDevices.filter { it.name.contains(query, ignoreCase = true) }
     }
 }
