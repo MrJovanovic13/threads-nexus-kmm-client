@@ -11,6 +11,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.runtime.Composable
@@ -24,6 +25,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import model.Device
 import model.enumeration.CommandType
+import model.enumeration.DeviceStatus
 import service.CommandsService
 import service.DeviceService
 
@@ -76,9 +78,17 @@ fun DashboardItem(item: Device, isLoading: MutableState<Boolean>) {
                     )
                 }
                 Icon(
-                    imageVector = Icons.Default.CheckCircle,
+                    // TODO There is code duplication here
+                    imageVector = when (item.status) {
+                        DeviceStatus.ONLINE -> Icons.Default.CheckCircle
+                        // TODO Consider different icon for offline client
+                        DeviceStatus.OFFLINE -> Icons.Default.Close
+                    },
                     contentDescription = "Status",
-                    tint = Color.Green
+                    tint = when (item.status) {
+                        DeviceStatus.ONLINE -> Color.Green
+                        DeviceStatus.OFFLINE -> Color.Red
+                    }
                 )
             }
         }
