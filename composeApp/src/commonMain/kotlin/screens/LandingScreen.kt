@@ -23,39 +23,24 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.russhwolf.settings.Settings
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import model.enumeration.DeviceEventName
-import model.enumeration.Severity
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import screens.composables.EditableFieldWithLabel
-import service.EventsService
-import service.startupCommandListener
-import service.startupDeviceEventListener
 
 class LandingScreen : Screen, KoinComponent {
 
     @Composable
     override fun Content() {
         MaterialTheme {}
-        val eventsService: EventsService by inject()
-        TwoEditableFieldsWindow(eventsService)
-
-        startupDeviceEventListener()
-        startupCommandListener()
+        TwoEditableFieldsWindow()
     }
 }
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun TwoEditableFieldsWindow(eventsService: EventsService) {
+fun TwoEditableFieldsWindow() {
     val navigator = LocalNavigator.currentOrThrow
-    val settings = Settings()
 
     Column(
         modifier = Modifier
@@ -85,15 +70,6 @@ fun TwoEditableFieldsWindow(eventsService: EventsService) {
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(onClick = {
-            CoroutineScope(Dispatchers.IO).launch {
-                eventsService.postEvent(
-                    DeviceEventName.DEVICE_ONLINE.name,
-                    null,
-                    Severity.LOW
-                )
-            }
-            settings.putString("groupName", groupName)
-            settings.putString("deviceName", deviceName)
             navigator.push(DevicesScreen())
         }) {
             Text("Connect")

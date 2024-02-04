@@ -43,6 +43,8 @@ import org.koin.core.component.inject
 import screens.composables.DashboardItem
 import screens.composables.LoadingIndicator
 import service.DeviceService
+import service.startupCommandListener
+import service.startupDeviceEventListener
 
 class DevicesScreen : Screen, KoinComponent {
     private var availableDevices = mutableStateListOf<Device>()
@@ -55,9 +57,12 @@ class DevicesScreen : Screen, KoinComponent {
     override fun Content() {
         MaterialTheme {}
 
+        CoroutineScope(Dispatchers.IO).launch {
+            deviceService.postCurrentDevice()
+        }
+
         if (isLoading.value) {
             CoroutineScope(Dispatchers.IO).launch {
-                deviceService.postCurrentDevice()
                 val devices = deviceService.getAllDevicesByGroupId()
                 availableDevices.clear()
                 availableDevices.addAll(devices)
@@ -65,6 +70,8 @@ class DevicesScreen : Screen, KoinComponent {
             }
             LoadingIndicator()
         } else {
+            startupDeviceEventListener()
+            startupCommandListener()
             Dashboard()
         }
     }
