@@ -46,7 +46,7 @@ import service.DeviceService
 import service.startupCommandListener
 import service.startupDeviceEventListener
 
-class DevicesScreen : Screen, KoinComponent {
+class DevicesScreen() : Screen, KoinComponent {
     private var availableDevices = mutableStateListOf<Device>()
     private var isLoading = mutableStateOf(true)
     private val deviceService: DeviceService by inject()
@@ -57,12 +57,9 @@ class DevicesScreen : Screen, KoinComponent {
     override fun Content() {
         MaterialTheme {}
 
-        CoroutineScope(Dispatchers.IO).launch {
-            deviceService.postCurrentDevice()
-        }
-
         if (isLoading.value) {
             CoroutineScope(Dispatchers.IO).launch {
+                deviceService.postCurrentDevice()
                 val devices = deviceService.getAllDevicesByGroupId()
                 availableDevices.clear()
                 availableDevices.addAll(devices)

@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.russhwolf.settings.Settings
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
@@ -70,6 +71,9 @@ fun TwoEditableFieldsWindow() {
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(onClick = {
+            Settings().putString("deviceName", deviceName)
+            Settings().putString("groupName", groupName)
+
             navigator.push(DevicesScreen())
         }) {
             Text("Connect")
