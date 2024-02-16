@@ -1,5 +1,6 @@
 package screens.composables
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,12 +21,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import model.Device
+import model.Option
 import model.enumeration.CommandType
 import model.enumeration.DeviceStatus
+import screens.ControllsScreen
 import service.CommandsService
 import service.DeviceService
 
@@ -34,6 +39,7 @@ fun DashboardItem(item: Device, isLoading: MutableState<Boolean>) {
     // TODO Troubleshoot and use KOIN here
     val commandsService = CommandsService()
     val deviceService = DeviceService()
+    val navigator = LocalNavigator.currentOrThrow
 
     Card(
         modifier = Modifier
@@ -43,6 +49,13 @@ fun DashboardItem(item: Device, isLoading: MutableState<Boolean>) {
     ) {
         Row(
             modifier = Modifier
+                .clickable {
+                    navigator.push(ControllsScreen(item,options = listOf(
+                        Option("Option 1"),
+                        Option("Option 2"),
+                        Option("Option 3")
+                    )))
+                }
                 .padding(16.dp)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
