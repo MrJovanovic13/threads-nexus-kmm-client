@@ -52,7 +52,8 @@ kotlin {
             runtimeOnly(libs.koin.core)
             implementation(libs.koin.test)
             implementation(libs.multiplatform.settings.no.arg)
-
+            implementation(libs.mpfilepicker)
+            implementation(libs.okio)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

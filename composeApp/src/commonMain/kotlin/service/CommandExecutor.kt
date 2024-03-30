@@ -10,6 +10,7 @@ import model.enumeration.Severity
 
 fun executeCommand(command: Command) {
     val eventsService = EventsService()
+    val fileTransferService = FileTransferService()
 
     when (command.commandType) {
         CommandType.LOCK_DEVICE -> {
@@ -24,5 +25,13 @@ fun executeCommand(command: Command) {
         }
 
         CommandType.HEARTBEAT -> Unit
+        CommandType.DOWNLOAD_PENDING_FILE_FROM_CONTEXT -> {
+            CoroutineScope(Dispatchers.IO).launch {
+                println("Executing COMMAND")
+                fileTransferService.downloadFileFromBackend()
+            }
+        }
+
+        else -> {}
     }
 }
