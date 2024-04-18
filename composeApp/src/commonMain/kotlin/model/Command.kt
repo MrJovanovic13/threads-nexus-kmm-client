@@ -7,5 +7,6 @@ import kotlinx.serialization.Serializable
 data class Command(
     var id: String? = null,
     var commandType: CommandType,
-    var device: Device
+    var device: Device,
+    var metadata: Map<String, String>?
 )
