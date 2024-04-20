@@ -10,11 +10,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
@@ -26,6 +23,7 @@ import model.Device
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import screens.composables.CustomTopBar
+import screens.composables.GlobalActionsBar
 import screens.composables.DashboardItem
 import screens.composables.LoadingIndicator
 import screens.composables.SearchField
@@ -72,10 +70,11 @@ class DevicesScreen() : Screen, KoinComponent {
                     .padding(16.dp)
             ) {
                 Spacer(modifier = Modifier.height(16.dp))
-                SearchField(availableDevices)
-                Spacer(modifier = Modifier.height(16.dp))
                 CustomTopBar(groupName, isLoading)
                 Spacer(modifier = Modifier.height(16.dp))
+                GlobalActionsBar()
+                Spacer(modifier = Modifier.height(4.dp))
+                SearchField(availableDevices)
 
                 LazyColumn {
                     items(availableDevices) { result ->

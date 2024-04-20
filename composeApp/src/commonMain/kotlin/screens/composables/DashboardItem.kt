@@ -57,7 +57,6 @@ fun DashboardItem(
     val fileTransferService = FileTransferService()
     var showFilePicker by remember { mutableStateOf(false) }
     var pathSingleChosen by remember { mutableStateOf("") }
-    val checked = remember { mutableStateOf(false) }
 
     FilePicker(show = showFilePicker) { file ->
         showFilePicker = false
