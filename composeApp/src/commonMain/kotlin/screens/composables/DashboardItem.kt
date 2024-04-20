@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Card
+import androidx.compose.material.Checkbox
+import androidx.compose.material.CheckboxColors
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -43,7 +45,11 @@ import service.DeviceService
 import service.FileTransferService
 
 @Composable
-fun DashboardItem(item: Device, isLoading: MutableState<Boolean>) {
+fun DashboardItem(
+    item: Device,
+    isLoading: MutableState<Boolean>,
+    isCheckboxShown: Boolean
+) {
     // TODO Troubleshoot and use KOIN here
     val commandsService = CommandsService()
     val deviceService = DeviceService()
@@ -51,6 +57,7 @@ fun DashboardItem(item: Device, isLoading: MutableState<Boolean>) {
     val fileTransferService = FileTransferService()
     var showFilePicker by remember { mutableStateOf(false) }
     var pathSingleChosen by remember { mutableStateOf("") }
+    val checked = remember { mutableStateOf(false) }
 
     FilePicker(show = showFilePicker) { file ->
         showFilePicker = false
@@ -71,17 +78,24 @@ fun DashboardItem(item: Device, isLoading: MutableState<Boolean>) {
         Row(
             modifier = Modifier
                 .clickable {
-                    navigator.push(ControllsScreen(item,options = listOf(
-                        Option("Option 1"),
-                        Option("Option 2"),
-                        Option("Option 3")
-                    )))
+                    navigator.push(
+                        ControllsScreen(
+                            item, options = listOf(
+                                Option("Option 1"),
+                                Option("Option 2"),
+                                Option("Option 3")
+                            )
+                        )
+                    )
                 }
                 .padding(16.dp)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
 
+            if (isCheckboxShown) {
+                CustomCheckbox()
+            }
             Text(
                 item.name,
                 style = MaterialTheme.typography.h5,
