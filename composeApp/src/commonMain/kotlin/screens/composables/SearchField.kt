@@ -30,6 +30,7 @@ fun SearchField(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.Gray)
-            .padding(8.dp)
+            .padding(8.dp),
+        singleLine = true
     )
 }
