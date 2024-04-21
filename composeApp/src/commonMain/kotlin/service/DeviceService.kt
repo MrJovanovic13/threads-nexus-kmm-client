@@ -82,4 +82,12 @@ class DeviceService {
             parameter("groupId", groupName)
         }.body()
     }
+
+    suspend fun getAllDevicesByGroupIdAndSearchText(searchText: String): List<Device> {
+        return client.get {
+            url(baseUrl)
+            parameter("groupId", groupName)
+            parameter("searchText", searchText)
+        }.body()
+    }
 }

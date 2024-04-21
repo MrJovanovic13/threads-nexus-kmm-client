@@ -34,15 +34,26 @@ import service.startupDeviceEventListener
 class DevicesScreen() : Screen, KoinComponent {
     private var availableDevices = mutableStateListOf<Device>()
     private var isLoading = mutableStateOf(true)
+    private var isSearching = mutableStateOf(false)
     private var isCheckboxVisible = mutableStateOf(false)
     private val deviceService: DeviceService by inject()
     private val settings = Settings()
     private val groupName = settings.getString("groupName", "UNKNOWN")
+    private val searchText = mutableStateOf("")
 
     @Composable
     override fun Content() {
         MaterialTheme {}
 
+        if(isSearching.value) {
+            CoroutineScope(Dispatchers.IO).launch {
+                val devices = deviceService.getAllDevicesByGroupIdAndSearchText(searchText.value)
+                availableDevices.clear()
+                availableDevices.addAll(devices)
+                isSearching.value = false
+            }
+            LoadingIndicator()
+        }
         if (isLoading.value) {
             CoroutineScope(Dispatchers.IO).launch {
                 deviceService.postCurrentDevice()
@@ -74,7 +85,10 @@ class DevicesScreen() : Screen, KoinComponent {
                 Spacer(modifier = Modifier.height(16.dp))
                 GlobalActionsBar()
                 Spacer(modifier = Modifier.height(4.dp))
-                SearchField(availableDevices)
+                SearchField(
+                    searchText = searchText.value,
+                    onSearchTextChange = ::onSearchTextChanged
+                )
 
                 LazyColumn {
                     items(availableDevices) { result ->
@@ -83,5 +97,11 @@ class DevicesScreen() : Screen, KoinComponent {
                 }
             }
         }
+    }
+
+    // TODO Implement debounce mechanism
+    private fun onSearchTextChanged(text: String) {
+        searchText.value = text
+        isSearching.value = true
     }
 }
