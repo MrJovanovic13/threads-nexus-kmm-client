@@ -32,7 +32,8 @@ fun EditableFieldWithLabel(label: String, text: String, onTextChange: (String) -
                 keyboardType = KeyboardType.Text,
                 capitalization = KeyboardCapitalization.Words
             ),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
         )
     }
 }
