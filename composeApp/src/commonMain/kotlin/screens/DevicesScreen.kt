@@ -90,7 +90,9 @@ class DevicesScreen() : Screen, KoinComponent {
                 GlobalActionsBar(
                     isAllChecked.value,
                     ::onAllCheckedChange,
-                    ::onIsFilePickerShownChange
+                    ::onIsFilePickerShownChange,
+                    currentlyCheckedItemsList.toList(),
+                    ::onIsLoadingStateChange
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 SearchField(
@@ -140,5 +142,9 @@ class DevicesScreen() : Screen, KoinComponent {
         if (checkedValue) {
             currentlyCheckedItemsList.addAll(availableDevices)
         }
+    }
+
+    private fun onIsLoadingStateChange(isLoadingValue: Boolean) {
+        isLoading.value = isLoadingValue;
     }
 }
