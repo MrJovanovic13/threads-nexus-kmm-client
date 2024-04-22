@@ -14,6 +14,8 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.Url
 import io.ktor.util.cio.writeChannel
 import io.ktor.utils.io.copyAndClose
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.io.File
 
 class FileTransferService {
@@ -26,6 +28,9 @@ class FileTransferService {
         client.submitFormWithBinaryData(
             url = "${Constants.BACKEND_URL}/devices/$recipientDeviceId/files",
             formData = formData {
+                append("recipientDeviceIds", Json.encodeToString(listOf(recipientDeviceId)), Headers.build {
+                    append(HttpHeaders.ContentType, "application/json")
+                })
                 append("file", file.readBytes(), Headers.build {
                     append(HttpHeaders.ContentDisposition, "filename=${file.name}")
                     append(HttpHeaders.ContentType, "image/png")
