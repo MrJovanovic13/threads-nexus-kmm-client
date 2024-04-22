@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 import model.Device
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import screens.composables.CustomFilePicker
 import screens.composables.CustomTopBar
 import screens.composables.GlobalActionsBar
 import screens.composables.DashboardItem
@@ -35,17 +36,20 @@ class DevicesScreen() : Screen, KoinComponent {
     private var availableDevices = mutableStateListOf<Device>()
     private var isLoading = mutableStateOf(true)
     private var isSearching = mutableStateOf(false)
-    private var isCheckboxVisible = mutableStateOf(false)
     private val deviceService: DeviceService by inject()
     private val settings = Settings()
     private val groupName = settings.getString("groupName", "UNKNOWN")
     private val searchText = mutableStateOf("")
+    private var isAllChecked = mutableStateOf(false)
+    private var isFilePickerShown = mutableStateOf(false)
+    private var currentlyCheckedItemsList = mutableStateListOf<Device>()
 
     @Composable
     override fun Content() {
         MaterialTheme {}
+        CustomFilePicker(isFilePickerShown.value, emptyList(), ::onIsFilePickerShownChange)
 
-        if(isSearching.value) {
+        if (isSearching.value) {
             CoroutineScope(Dispatchers.IO).launch {
                 val devices = deviceService.getAllDevicesByGroupIdAndSearchText(searchText.value)
                 availableDevices.clear()
@@ -83,7 +87,11 @@ class DevicesScreen() : Screen, KoinComponent {
                 Spacer(modifier = Modifier.height(16.dp))
                 CustomTopBar(groupName, isLoading)
                 Spacer(modifier = Modifier.height(16.dp))
-                GlobalActionsBar()
+                GlobalActionsBar(
+                    isAllChecked.value,
+                    ::onAllCheckedChange,
+                    ::onIsFilePickerShownChange
+                )
                 Spacer(modifier = Modifier.height(4.dp))
                 SearchField(
                     searchText = searchText.value,
@@ -92,7 +100,13 @@ class DevicesScreen() : Screen, KoinComponent {
 
                 LazyColumn {
                     items(availableDevices) { result ->
-                        DashboardItem(item = result, isLoading = isLoading, isCheckboxVisible.value)
+                        DashboardItem(
+                            device = result,
+                            isLoading = isLoading,
+                            currentlyCheckedItemsList.contains(result),
+                            ::onIsFilePickerShownChange,
+                            ::onSingleCheckedChange
+                        )
                     }
                 }
             }
@@ -103,5 +117,28 @@ class DevicesScreen() : Screen, KoinComponent {
     private fun onSearchTextChanged(text: String) {
         searchText.value = text
         isSearching.value = true
+    }
+
+    private fun onIsFilePickerShownChange(isFilePickerShownValue: Boolean) {
+        isFilePickerShown.value = isFilePickerShownValue
+    }
+
+    private fun onSingleCheckedChange(checkedValue: Boolean, device: Device) {
+        currentlyCheckedItemsList.remove(device)
+
+        if (checkedValue) {
+            currentlyCheckedItemsList.add(device)
+        }
+
+        println(currentlyCheckedItemsList.toList().count())
+    }
+
+    private fun onAllCheckedChange(checkedValue: Boolean) {
+        isAllChecked.value = checkedValue
+        currentlyCheckedItemsList.clear()
+
+        if (checkedValue) {
+            currentlyCheckedItemsList.addAll(availableDevices)
+        }
     }
 }

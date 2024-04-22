@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Card
-import androidx.compose.material.Checkbox
-import androidx.compose.material.CheckboxColors
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -18,20 +16,14 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.sharp.Lock
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -42,31 +34,20 @@ import model.enumeration.DeviceStatus
 import screens.ControllsScreen
 import service.CommandsService
 import service.DeviceService
-import service.FileTransferService
+import kotlin.reflect.KFunction2
 
 @Composable
 fun DashboardItem(
-    item: Device,
+    device: Device,
     isLoading: MutableState<Boolean>,
-    isCheckboxShown: Boolean
+    isCheckboxShown: Boolean,
+    onFilePickerShownChange: (Boolean) -> Unit,
+    onSingleCheckedChange: KFunction2<Boolean, Device, Unit>
 ) {
     // TODO Troubleshoot and use KOIN here
     val commandsService = CommandsService()
     val deviceService = DeviceService()
     val navigator = LocalNavigator.currentOrThrow
-    val fileTransferService = FileTransferService()
-    var showFilePicker by remember { mutableStateOf(false) }
-    var pathSingleChosen by remember { mutableStateOf("") }
-
-    FilePicker(show = showFilePicker) { file ->
-        showFilePicker = false
-        pathSingleChosen = file?.path ?: "none selected"
-        println(pathSingleChosen)
-
-        CoroutineScope(Dispatchers.IO).launch {
-            fileTransferService.uploadFileToBackend(pathSingleChosen, item.id.toString())
-        }
-    }
 
     Card(
         modifier = Modifier
@@ -79,7 +60,7 @@ fun DashboardItem(
                 .clickable {
                     navigator.push(
                         ControllsScreen(
-                            item, options = listOf(
+                            device, options = listOf(
                                 Option("Option 1"),
                                 Option("Option 2"),
                                 Option("Option 3")
@@ -92,11 +73,9 @@ fun DashboardItem(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
 
-            if (isCheckboxShown) {
-                CustomCheckbox()
-            }
+            CustomCheckbox(isCheckboxShown, device, onSingleCheckedChange)
             Text(
-                item.name,
+                device.name,
                 style = MaterialTheme.typography.h5,
                 modifier = Modifier.weight(1f)
             )
@@ -106,7 +85,7 @@ fun DashboardItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = {
-                    showFilePicker = true
+                    onFilePickerShownChange(true)
                 }) {
                     // TODO Use different icon
                     Icon(imageVector = Icons.Default.AddCircle, contentDescription = "Test")
@@ -114,7 +93,7 @@ fun DashboardItem(
 
                 IconButton(onClick = {
                     CoroutineScope(Dispatchers.IO).launch {
-                        commandsService.postEvent(CommandType.LOCK_DEVICE, item)
+                        commandsService.postEvent(CommandType.LOCK_DEVICE, device)
                     }
                 }) {
                     Icon(imageVector = Icons.Default.Lock, contentDescription = "LockDevice")
@@ -122,7 +101,7 @@ fun DashboardItem(
 
                 IconButton(onClick = {
                     CoroutineScope(Dispatchers.IO).launch {
-                        deviceService.detachDeviceFromGroup(item)
+                        deviceService.detachDeviceFromGroup(device)
                         isLoading.value = true
                     }
                 }) {
@@ -133,13 +112,13 @@ fun DashboardItem(
                 }
                 Icon(
                     // TODO There is code duplication here
-                    imageVector = when (item.status) {
+                    imageVector = when (device.status) {
                         DeviceStatus.ONLINE -> Icons.Default.CheckCircle
                         // TODO Consider different icon for offline client
                         DeviceStatus.OFFLINE -> Icons.Default.Close
                     },
                     contentDescription = "Status",
-                    tint = when (item.status) {
+                    tint = when (device.status) {
                         DeviceStatus.ONLINE -> Color.Green
                         DeviceStatus.OFFLINE -> Color.Red
                     }

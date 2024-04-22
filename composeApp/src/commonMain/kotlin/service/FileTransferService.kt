@@ -22,13 +22,15 @@ class FileTransferService {
 
     private val client = HttpClient()
 
-    suspend fun uploadFileToBackend(filePath: String, recipientDeviceId: String) {
+    private val currentDeviceId = Settings().getString("deviceId", "UNKNOWN");
+
+    suspend fun uploadFileToBackend(filePath: String, recipientDeviceIds: List<String>) {
         val file = File(filePath) // TODO Use streaming instead of loading whole file in-memory
 
         client.submitFormWithBinaryData(
-            url = "${Constants.BACKEND_URL}/devices/$recipientDeviceId/files",
+            url = "${Constants.BACKEND_URL}/devices/$currentDeviceId/files",
             formData = formData {
-                append("recipientDeviceIds", Json.encodeToString(listOf(recipientDeviceId)), Headers.build {
+                append("recipientDeviceIds", Json.encodeToString(recipientDeviceIds), Headers.build {
                     append(HttpHeaders.ContentType, "application/json")
                 })
                 append("file", file.readBytes(), Headers.build {
@@ -39,7 +41,7 @@ class FileTransferService {
     }
 
     suspend fun downloadFileFromBackend() {
-        val currentDeviceId = Settings().getString("deviceId", "UNKNOWN");
+        val currentDeviceId = Settings().getString("deviceId", "UNKNOWN")
         val httpResponse =
             client.get(Constants.BACKEND_URL + "/devices/" + currentDeviceId + "/files")
 

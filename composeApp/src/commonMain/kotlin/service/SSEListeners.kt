@@ -24,7 +24,7 @@ fun startupDeviceEventListener() {
     CoroutineScope(Dispatchers.IO).launch {
         client.serverSentEventsSession(Constants.BACKEND_URL.plus("/events/stream"))
             .incoming
-            .map { println(it) } // TODO Transform and show events as notifications
+            .onEach { println(it) } // TODO Transform and show events as notifications
             .collect()
     }
 }
@@ -45,6 +45,7 @@ fun startupCommandListener() {
             .map { Json.decodeFromString<Command>(it.data!!) }
             .filter { it.commandType != CommandType.HEARTBEAT }
             .onEach { executeCommand(it)}
+            .onEach { println(it) }
             .collect()
     }
 }
