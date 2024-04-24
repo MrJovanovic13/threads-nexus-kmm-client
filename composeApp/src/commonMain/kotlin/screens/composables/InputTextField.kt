@@ -16,7 +16,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun EditableFieldWithLabel(label: String, text: String, onTextChange: (String) -> Unit) {
+fun InputTextField(label: String, text: String, onTextChange: (String) -> Unit) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.Start
@@ -33,7 +33,8 @@ fun EditableFieldWithLabel(label: String, text: String, onTextChange: (String) -
                 capitalization = KeyboardCapitalization.Words
             ),
             modifier = Modifier.fillMaxWidth(),
-            singleLine = true
+            singleLine = true,
+            isError = text.isEmpty()
         )
     }
 }
